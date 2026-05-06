@@ -1,12 +1,10 @@
-# ARPX — Enhanced Athlete Risk Predictor
+# Enhanced Athlete Risk Predictor
 
 > Uncertainty-aware, counterfactually explainable risk stratification
 > for pharmacologically enhanced athletes — a medically underserved
 > population whose biomarker profiles fall outside standard clinical
 > reference ranges.
 
-**🔗 [Live demo](https://enhanced-athlete-risk-predictor.onrender.com)** ·
-**📄 [Paper draft](./paper/main.pdf)** ·
 **📊 [Model card](./MODEL_CARD.md)** ·
 **📁 [Data card](./DATA_CARD.md)**
 
@@ -140,13 +138,10 @@ All scripts use a fixed seed (42). Outputs are deterministic.
 
 ## Limitations
 
-Disclosed in the paper (Section VII) and worth surfacing here:
-
 - **Synthetic data only.** No real athlete records. Validation against
   NHANES marginals is partial.
 - **Label circularity.** Risk labels are a deterministic function of
-  the biomarkers, not clinical adjudication. A blind clinician rating
-  study (n=200) is in progress.
+  the biomarkers, not clinical adjudication.
 - **Demographic skew.** ~85% male, US/European reference ranges.
   South Asian, female, and pediatric athletes need separate
   recalibration.
@@ -158,30 +153,7 @@ Disclosed in the paper (Section VII) and worth surfacing here:
 
 ---
 
-## Citation
-
-If this work informs further research, please cite the in-progress
-paper (EMBC 2026 submission):
-
-```
-Hota, V. (2026). Uncertainty-Aware and Counterfactually Explainable
-Risk Stratification for Enhanced Athletes: A Methodological Framework
-on Synthetic Physiological Data. Submitted to IEEE EMBC 2026.
-```
-
----
-
 ## License
 
 Code: MIT. Synthetic dataset: CC BY-NC-SA 4.0 (research and
 education only; commercial or enforcement use prohibited).
-
----
-
-## Author
-
-**Vishal Hota** — B.Tech CSE (AI/ML), KL University Hyderabad
-Targeting MS programs at Carnegie Mellon, UCLA, Georgia Tech.
-
-GitHub: [vishalbunn](https://github.com/vishalbunn) ·
-Email: vishalhota9@gmail.com

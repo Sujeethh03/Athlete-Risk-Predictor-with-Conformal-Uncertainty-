@@ -1,7 +1,5 @@
 
-# Data Card: ARPX Synthetic Benchmark v2
-
-Datasheet following [Gebru et al. 2018](https://arxiv.org/abs/1803.09010).
+# Data Card: Enhanced Athlete Synthetic Benchmark v2
 
 ---
 
@@ -24,8 +22,7 @@ risk classification.
 
 ### Who created it?
 
-Vishal Hota (KL University Hyderabad) under self-supervised research
-context. No external funding.
+Sujeeth Godavarthi. No external funding.
 
 ---
 
@@ -99,9 +96,8 @@ function applied to the biomarkers. Specifically:
   AST, HDL, LDL, and the composite enhancement load.
 - Cumulative score thresholds map to the 3 classes.
 
-The exact scoring rule is documented in the paper's Appendix A but
-withheld from public release as a misuse mitigation
-(see "Considerations" below).
+The exact scoring rule is withheld from public release as a misuse
+mitigation (see "Considerations" below).
 
 ### Are there missing values?
 
@@ -194,7 +190,7 @@ and test splits retain natural class distributions.
   - Commercial use prohibited
   - Anti-doping / surveillance use prohibited (specific clause)
   - Derivatives must use the same license
-- **Hosted at**: https://github.com/vishalbunn/Enhanced_athlete_risk_predictor
+- **Hosted at**: https://github.com/Sujeethh03/Athlete-Risk-Predictor-with-Conformal-Uncertainty-
 - **Format**: CSV (3000 rows × 21 columns including label)
 - **Size**: ~270 KB
 
@@ -236,9 +232,9 @@ includes a honest-disclosure footer.
 
 ## Maintenance
 
-- Maintainer: Vishal Hota (vishalhota9@gmail.com)
+- Maintainer: Sujeeth Godavarthi (sujeeth.godavarthi@gmail.com)
 - Update cadence: Major revisions tracked via Git semver tags
-- Issues: https://github.com/vishalbunn/Enhanced_athlete_risk_predictor/issues
+- Issues: https://github.com/Sujeethh03/Athlete-Risk-Predictor-with-Conformal-Uncertainty-/issues
 
 ---
 

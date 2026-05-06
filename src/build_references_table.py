@@ -267,40 +267,6 @@ def plot_comparison(df, synthetic_stats, nhanes_hdl):
     print(f"  Validation comparison plot → {out_path}")
 
 
-def print_paper_paragraph(synthetic_stats, nhanes_hdl):
-    """Print the exact paragraph you paste into your paper Section 2."""
-    syn_t  = synthetic_stats["testosterone_total"]["male"]
-    syn_h  = synthetic_stats["hematocrit"]["male"]
-    syn_alt= synthetic_stats["ALT"]["overall"]
-    syn_hdl= synthetic_stats["HDL"]["overall"]
-    syn_cr = synthetic_stats["creatinine"]["overall"]
-
-    nhanes_hdl_str = (f"{nhanes_hdl['mean']:.1f} ± {nhanes_hdl['sd']:.1f} mg/dL "
-                      f"(N={nhanes_hdl['n']:,})" if nhanes_hdl
-                      else "53.4 ± 14.8 mg/dL (NHANES 2017-2018)")
-
-    print("\n" + "=" * 65)
-    print("  PAPER-READY PARAGRAPH — paste into Section 2 (Dataset)")
-    print("=" * 65)
-    print(f"""
-To assess the physiological plausibility of our synthetic dataset,
-we compared biomarker distributions against published population
-reference values and the NHANES 2017-2018 cohort (N=8,366).
-Male testosterone in our dataset (mean {syn_t[0]:.0f} ± {syn_t[1]:.0f} ng/dL)
-encompasses both natural ranges (300-1,000 ng/dL; Bhasin et al. 2010)
-and the elevated values characteristic of the enhancement-phase
-cohort (Handelsman et al. 2014). Hematocrit distributions
-(male: {syn_h[0]:.1f} ± {syn_h[1]:.1f}%) are consistent with reported
-polycythemia risk in androgen-using athletes (Stout et al. 2017).
-HDL levels ({syn_hdl[0]:.1f} ± {syn_hdl[1]:.1f} mg/dL) are lower than the
-general NHANES population ({nhanes_hdl_str}),
-reflecting the documented dyslipidemic effect of anabolic-androgenic
-steroids (Lippi et al. 2011). Liver enzyme elevations (ALT:
-{syn_alt[0]:.1f} ± {syn_alt[1]:.1f} U/L) are consistent with hepatotoxicity
-patterns reported with oral AAS use (Prati et al. 2002).
-Full distribution comparisons are provided in Table 2 and Figure 2.
-    """.strip())
-    print("=" * 65 + "\n")
 
 
 def main():
@@ -325,9 +291,7 @@ def main():
     print("\n  Generating validation comparison figure...")
     plot_comparison(df, synthetic_stats, nhanes_hdl)
 
-    print_paper_paragraph(synthetic_stats, nhanes_hdl)
-
-    print("  Day 1 Task 5 complete.\n")
+    print("  References table complete.\n")
 
 
 if __name__ == "__main__":

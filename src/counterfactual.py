@@ -46,9 +46,9 @@ Term 2: minimise the number and magnitude of changes (L1 sparsity)
 
 OUTPUTS
 -------
-    outputs/counterfactual_cases.csv        (paper Table 7)
-    outputs/counterfactual_heatmap.png      (paper Figure 10)
-    outputs/counterfactual_waterfall.png    (paper Figure 11)
+    outputs/counterfactual_cases.csv
+    outputs/counterfactual_heatmap.png
+    outputs/counterfactual_waterfall.png
 
 USAGE
 -----
@@ -351,7 +351,7 @@ def build_case_studies(
 # ═════════════════════════════════════════════════════════════════════════════
 
 def save_case_table(cases: list) -> pd.DataFrame:
-    """Save paper-ready Table 7: counterfactual case studies."""
+    """Save counterfactual case studies."""
     rows = []
     for case in cases:
         for fc in case["feature_changes"][:5]:  # top 5 changes per case
@@ -519,68 +519,11 @@ def plot_feature_frequency(cases: list):
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# SECTION 6 — PAPER PARAGRAPH
-# ═════════════════════════════════════════════════════════════════════════════
-
-def print_paper_paragraph(cases: list):
-    # Pull stats from Case 1 for concrete example
-    c1       = cases[0]
-    top_feat = c1["feature_changes"][0]
-    sec_feat = c1["feature_changes"][1] if len(c1["feature_changes"]) > 1 else None
-
-    # Most frequent feature across all cases
-    feat_counts = {}
-    for case in cases:
-        for fc in case["feature_changes"]:
-            feat_counts[fc["feature"]] = feat_counts.get(fc["feature"], 0) + 1
-    most_common = max(feat_counts, key=feat_counts.get)
-
-    avg_changes = np.mean([c["n_changed"] for c in cases])
-    success_rate= sum(c["success"] for c in cases) / len(cases)
-
-    print("\n" + "=" * 65)
-    print("  PAPER PARAGRAPH — Section 4.3 (Counterfactual Explanations)")
-    print("=" * 65)
-    print(f"""
-To provide actionable clinical insights beyond feature attribution,
-we generate counterfactual explanations (Wachter et al., 2017) for
-high-risk athlete profiles. Counterfactual explanations identify the
-minimum-change perturbation to an athlete's biomarker profile that
-would reclassify their risk from HIGH to MODERATE, providing
-clinically actionable guidance beyond what SHAP values alone convey.
-
-We apply a two-stage gradient-free optimisation (differential
-evolution followed by L-BFGS-B local refinement) to solve the
-Wachter objective, which minimises prediction loss subject to an
-L1 sparsity penalty (λ={0.10}) on normalised feature changes.
-Counterfactuals were successfully generated for {int(success_rate*100)}%
-of the five high-risk case studies examined (P(high) ≥ 0.70),
-with an average of {avg_changes:.1f} features requiring modification.
-
-In Case 1 (male, {c1['meta']['age']}y, {c1['meta']['status']} cycle,
-P(high)={c1['proba_orig'][0]:.2f}), the counterfactual required
-{top_feat['feature']} to change from {top_feat['original']:.1f} to
-{top_feat['counterfactual']:.1f} {top_feat['unit']}
-({top_feat['direction']} {abs(top_feat['delta_pct']):.1f}%){
-    f", and {sec_feat['feature']} from {sec_feat['original']:.1f} to {sec_feat['counterfactual']:.1f} {sec_feat['unit']}"
-    if sec_feat else ""
-}, reducing P(high) to {c1['proba_cf'][0]:.2f}.
-Across all cases, {most_common} appeared most frequently as a
-required counterfactual change, consistent with its role as the
-primary risk driver identified in SHAP analysis. These results
-suggest that targeted interventions — particularly haematological
-monitoring and enhancement load reduction — represent the highest-
-leverage clinical actions for risk mitigation in this population.
-    """.strip())
-    print("=" * 65 + "\n")
-
-
-# ═════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═════════════════════════════════════════════════════════════════════════════
 
 def main():
-    print("\n  Day 6 — Counterfactual Explanations")
+    print("\n  Counterfactual Explanations")
     print("  " + "=" * 50)
 
     print("\n  Loading data and model...")
@@ -604,11 +547,7 @@ def main():
     plot_waterfall(cases)
     plot_feature_frequency(cases)
 
-    print_paper_paragraph(cases)
-
-    print("  Day 6 complete.")
-    print("  Next: Day 7 — ethics section + blind rating protocol design")
-    print("  Then: Day 8 — paper writing (Methods + Results sections)\n")
+    print("  Counterfactual analysis complete.\n")
 
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ LABEL GENERATION — TRANSPARENCY STATEMENT
 Risk labels are assigned via a clinically-motivated scoring function
 (see assign_risk_label() below). This is a SYNTHETIC BENCHMARK —
 labels do NOT come from physician diagnosis or clinical outcomes.
-This must be disclosed in Section 2 of any paper using this dataset.
+This is a synthetic benchmark — labels do NOT come from physician diagnosis.
 The scoring function was designed to reflect known risk patterns in
 the enhanced athlete literature:
   - Hematocrit > 52%     → polycythemia / thrombosis risk
@@ -40,7 +40,7 @@ SPLITS PRODUCED
   train.csv        60%  — model training
   val.csv          15%  — hyperparameter tuning
   calibration.csv  10%  — conformal prediction calibration (Day 5)
-  test.csv         15%  — final held-out evaluation (NEVER touch until paper)
+  test.csv         15%  — final held-out evaluation
 
 All splits are stratified by risk class to preserve 57/32/11 distribution.
 
@@ -165,7 +165,6 @@ NOISE_SD = {
 # SECTION 3 — RISK SCORING FUNCTION
 # Transparent, clinically-motivated rule.
 # This is the "ground truth" for this synthetic benchmark.
-# Must be disclosed in paper Section 2.
 # ═════════════════════════════════════════════════════════════════════════════
 
 def compute_risk_score(row: dict) -> int:
@@ -173,10 +172,10 @@ def compute_risk_score(row: dict) -> int:
     Compute integer risk score from biomarkers.
     Higher score = higher risk.
 
-    Scoring rationale (cite in paper):
+    Scoring rationale:
     - Hematocrit > 52%  : polycythemia threshold (Stout et al. 2017)
     - ALT > 50 U/L      : hepatotoxicity marker (Prati et al. 2002)
-    - Enhancement load  : cumulative PED burden (this study)
+    - Enhancement load  : cumulative PED burden
     - HDL < 35 mg/dL    : cardiovascular risk (AHA guidelines)
     - LDL > 160 mg/dL   : cardiovascular risk (Grundy et al. 2018)
     - Creatinine > 1.4  : renal strain marker (Levey et al. 2009)
@@ -345,7 +344,7 @@ def generate_one_sample(idx: int) -> dict:
     # ── Assign label via documented scoring function ──────────────────────────
     score        = compute_risk_score(row)
     row["risk"]  = assign_risk_label(score)
-    row["risk_score"] = score   # keep raw score for paper analysis
+    row["risk_score"] = score
 
     # ── Sample date (1 year window) ──────────────────────────────────────────
     start = date(2024, 1, 1)
@@ -441,7 +440,7 @@ def save_all(df: pd.DataFrame, splits: dict):
     df_public.to_csv(full_path, index=False)
     print(f"\n  Full dataset saved → {full_path}")
 
-    # Internal version with risk_score (for paper analysis)
+    # Internal version with risk_score
     internal_path = os.path.join(OUT_DATA, "synthetic_athlete_health_risk_v2_scored.csv")
     df.to_csv(internal_path, index=False)
 
@@ -499,7 +498,7 @@ def plot_verification(df: pd.DataFrame):
 
 
 def plot_class_balance(df: pd.DataFrame):
-    """Class balance bar chart — for paper Figure 1."""
+    """Class balance bar chart."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
     fig.suptitle("Dataset v2 — Class and Status Distribution",
                  fontsize=12, fontweight="bold")
@@ -537,7 +536,7 @@ def plot_class_balance(df: pd.DataFrame):
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# SECTION 7 — DATA CARD (paper-ready dataset documentation)
+# SECTION 7 — DATA CARD
 # ═════════════════════════════════════════════════════════════════════════════
 
 def write_data_card(df: pd.DataFrame, splits: dict):
@@ -566,7 +565,7 @@ def write_data_card(df: pd.DataFrame, splits: dict):
     synthetic benchmark is designed to enable development and evaluation of
     ML-based risk stratification methods, pending real-world validation.
 
-    ## Label Generation — MUST DISCLOSE IN PAPER
+    ## Label Generation
     Risk labels are assigned via a deterministic scoring function
     (`compute_risk_score` in data_generator.py), NOT from physician
     diagnosis or clinical outcomes. The scoring function awards points
@@ -593,7 +592,7 @@ def write_data_card(df: pd.DataFrame, splits: dict):
     | train | {len(splits['train'])} | Model training |
     | val | {len(splits['val'])} | Hyperparameter tuning |
     | calibration | {len(splits['calibration'])} | Conformal prediction calibration ONLY |
-    | test | {len(splits['test'])} | Final held-out evaluation — do not touch until paper |
+    | test | {len(splits['test'])} | Final held-out evaluation |
 
     ## Features
     | Feature | Type | Unit | Physiological Range | Clinical Significance |
@@ -713,6 +712,4 @@ if __name__ == "__main__":
 
     print_summary(df)
 
-    print("\n  Day 2 complete.")
-    print("  Next: Day 3 — run build_references_table.py on v2 data,")
-    print("        then Day 4 — train.py with proper CV pipeline.\n")
+    print("\n  Data generation complete.\n")

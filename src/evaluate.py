@@ -9,14 +9,14 @@ WHAT THIS DOES
 2. Produces per-class precision / recall / F1 for every model
 3. Computes ECE (Expected Calibration Error) — measures if the model's
    confidence scores match its actual accuracy
-4. Plots reliability diagrams (calibration curves) — Figure 6 in paper
+4. Plots reliability diagrams (calibration curves)
 5. Computes Brier scores — a single number summarising calibration quality
-6. Produces a combined evaluation dashboard — Figure 7 in paper
+6. Produces a combined evaluation dashboard
 7. Saves:
-   - outputs/per_class_metrics.csv      (paper Table 4)
-   - outputs/calibration_plot.png       (paper Figure 6)
-   - outputs/evaluation_dashboard.png   (paper Figure 7)
-   - outputs/ece_summary.csv            (paper Table 5)
+   - outputs/per_class_metrics.csv
+   - outputs/calibration_plot.png
+   - outputs/evaluation_dashboard.png
+   - outputs/ece_summary.csv
 
 WHY ECE MATTERS
 ---------------
@@ -453,76 +453,11 @@ def plot_evaluation_dashboard(models, X_test, y_test, le, df_metrics, df_ece):
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# SECTION 6 — PAPER PARAGRAPHS
-# ═════════════════════════════════════════════════════════════════════════════
-
-def print_paper_paragraphs(df_metrics, df_ece, models, y_test, le):
-    """Print paste-ready paragraphs for paper Sections 4 and 5."""
-
-    # High-risk recall for CatBoost
-    cb_high_rec  = df_metrics[(df_metrics["Model"] == "CatBoost") &
-                               (df_metrics["Class"] == "high")]["Recall"].values[0]
-    cb_high_prec = df_metrics[(df_metrics["Model"] == "CatBoost") &
-                               (df_metrics["Class"] == "high")]["Precision"].values[0]
-    cb_high_f1   = df_metrics[(df_metrics["Model"] == "CatBoost") &
-                               (df_metrics["Class"] == "high")]["F1-Score"].values[0]
-
-    cb_ece_mean  = df_ece[df_ece["Model"] == "CatBoost"]["ECE"].mean()
-    cb_brier     = df_ece[df_ece["Model"] == "CatBoost"]["Brier Score"].mean()
-
-    print("\n" + "=" * 65)
-    print("  PAPER PARAGRAPHS — Section 4.2 (Per-Class Analysis)")
-    print("=" * 65)
-    print(f"""
-Table 4 presents per-class precision, recall, and F1-scores for all
-models evaluated on the held-out test set. The high-risk class
-represents the clinically critical minority (N=37, 8.2% of test set).
-CatBoost achieved a high-risk recall of {cb_high_rec:.2f}, indicating
-that the model correctly identified {cb_high_rec*100:.0f}% of
-high-risk athletes — the primary safety-relevant metric for clinical
-screening applications. High-risk precision of {cb_high_prec:.2f}
-reflects an acceptable false positive rate for a screening context,
-where missed cases carry greater clinical cost than false alarms.
-High-risk F1-score of {cb_high_f1:.2f} represents the harmonic mean
-of these competing objectives.
-
-Low-risk classification achieved near-perfect F1 across all models
-(CatBoost: {df_metrics[(df_metrics["Model"]=="CatBoost") & (df_metrics["Class"]=="low")]["F1-Score"].values[0]:.2f}),
-reflecting the model's robust identification of the majority class.
-Moderate-risk remained the most challenging class due to its
-intermediate biomarker profiles overlapping with both adjacent classes.
-    """.strip())
-
-    print(f"""
-
---- Section 5.1 (Calibration Analysis) ---
-
-We assess model calibration via Expected Calibration Error (ECE)
-and Brier score, reported in Table 5. ECE measures the gap between
-predicted confidence and empirical accuracy across probability bins;
-a well-calibrated model yields ECE approaching zero.
-
-CatBoost achieved a mean ECE of {cb_ece_mean:.4f} across all three
-risk classes, indicating strong alignment between predicted
-probabilities and empirical frequencies (Figure 6). The mean Brier
-score of {cb_brier:.4f} further confirms that probability estimates
-are informative and not degenerate. All models achieved ECE < 0.05,
-a threshold commonly cited as the boundary for clinically acceptable
-calibration in medical ML applications.
-
-These calibration results establish the foundation for conformal
-prediction (Section 5.2), which leverages the calibration set to
-provide distribution-free coverage guarantees on prediction sets.
-    """.strip())
-    print("=" * 65 + "\n")
-
-
-# ═════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═════════════════════════════════════════════════════════════════════════════
 
 def main():
-    print("\n  Day 4 — Evaluation & Calibration Analysis")
+    print("\n  Evaluation & Calibration Analysis")
     print("  " + "=" * 50)
 
     print("\n  Loading data and models...")
@@ -541,11 +476,7 @@ def main():
     plot_reliability_diagrams(models, X_test, y_test, le)
     plot_evaluation_dashboard(models, X_test, y_test, le, df_metrics, df_ece)
 
-    print_paper_paragraphs(df_metrics, df_ece, models, y_test, le)
-
-    print("  Day 4 complete.")
-    print("  Next: Day 5 — conformal.py (prediction sets with coverage guarantees)")
-    print("  Then: Day 6 — counterfactual.py ('what needs to change?')\n")
+    print("  Evaluation complete.\n")
 
 
 if __name__ == "__main__":

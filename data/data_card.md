@@ -18,7 +18,7 @@ publicly available labeled dataset exists for this population. This
 synthetic benchmark is designed to enable development and evaluation of
 ML-based risk stratification methods, pending real-world validation.
 
-## Label Generation — MUST DISCLOSE IN PAPER
+## Label Generation
 Risk labels are assigned via a deterministic scoring function
 (`compute_risk_score` in data_generator.py), NOT from physician
 diagnosis or clinical outcomes. The scoring function awards points
@@ -45,7 +45,7 @@ Score >= 7 → high | Score 3-6 → moderate | Score < 3 → low
 | train | 1800 | Model training |
 | val | 450 | Hyperparameter tuning |
 | calibration | 300 | Conformal prediction calibration ONLY |
-| test | 450 | Final held-out evaluation — do not touch until paper |
+| test | 450 | Final held-out evaluation |
 
 ## Features
 | Feature | Type | Unit | Physiological Range | Clinical Significance |

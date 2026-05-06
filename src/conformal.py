@@ -49,9 +49,9 @@ HOW IT WORKS — THE MATH (simple version)
 
 OUTPUTS
 -------
-  outputs/conformal_coverage.png      (paper Figure 8)
-  outputs/conformal_set_sizes.png     (paper Figure 9)
-  outputs/conformal_results.csv       (paper Table 6)
+  outputs/conformal_coverage.png
+  outputs/conformal_set_sizes.png
+  outputs/conformal_results.csv
   models/conformal_predictor.pkl      (for use in app.py)
 
 USAGE
@@ -287,7 +287,7 @@ def load_everything():
 def calibrate_all_alphas(model, X_cal, X_test, y_cal, y_test, le):
     """
     Run conformal prediction at alpha = 0.10, 0.05, 0.01.
-    Gives the paper Table 6 with coverage at three confidence levels.
+    Gives coverage results at three confidence levels.
     """
     alphas  = [0.10, 0.05, 0.01]
     results = []
@@ -539,57 +539,11 @@ def plot_score_distribution(cp_05):
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# SECTION 7 — PAPER PARAGRAPH
-# ═════════════════════════════════════════════════════════════════════════════
-
-def print_paper_paragraph(df_res, cp_05, per_class_rows):
-    stats_05 = df_res[df_res["alpha"] == 0.05].iloc[0]
-    stats_01 = df_res[df_res["alpha"] == 0.01].iloc[0]
-
-    high_cov = next((r["coverage"] for r in per_class_rows
-                     if r["class"] == "high"), None)
-
-    print("\n" + "=" * 65)
-    print("  PAPER PARAGRAPH — Section 5.2 (Conformal Prediction)")
-    print("=" * 65)
-    print(f"""
-We apply split conformal prediction (Angelopoulos & Bates, 2022)
-to provide statistically guaranteed uncertainty quantification for
-our risk classification system. Using the held-out calibration set
-(N={cp_05.n_cal}), we compute nonconformity scores as the complement
-of the model's predicted probability for the true class, and
-derive a threshold q_hat = {cp_05.q_hat:.4f} at significance level
-alpha = 0.05.
-
-At alpha = 0.05 (95% coverage target), our system achieves empirical
-coverage of {stats_05['empirical_coverage']*100:.2f}%, satisfying the
-distribution-free coverage guarantee. The average prediction set size
-of {stats_05['avg_set_size']:.3f} indicates that {stats_05['singleton_rate']*100:.1f}%
-of predictions are confident single-class assignments, with only
-{stats_05['doubleton_rate']*100:.1f}% of cases requiring a two-class set
-to maintain coverage. At the stricter alpha = 0.01 level
-(99% coverage), empirical coverage of {stats_01['empirical_coverage']*100:.2f}%
-is achieved at the cost of increased set size
-({stats_01['avg_set_size']:.3f} average).
-
-Per-class analysis reveals that high-risk coverage is
-{high_cov*100:.2f}% at alpha = 0.05, confirming that the guarantee
-extends to the clinically critical minority class. Cases where the
-prediction set contains multiple classes (e.g., {{moderate, high}})
-represent borderline profiles warranting additional clinical review,
-providing an actionable uncertainty signal not available from point
-predictions alone. All coverage guarantees are distribution-free,
-requiring only exchangeability between calibration and test data.
-    """.strip())
-    print("=" * 65 + "\n")
-
-
-# ═════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═════════════════════════════════════════════════════════════════════════════
 
 def main():
-    print("\n  Day 5 — Conformal Prediction")
+    print("\n  Conformal Prediction")
     print("  " + "=" * 50)
 
     print("\n  Loading data and model...")
@@ -618,11 +572,7 @@ def main():
     print("\n  Saving conformal predictor (alpha=0.05)...")
     cp_05.save(os.path.join(MODELS, "conformal_predictor.pkl"))
 
-    print_paper_paragraph(df_res, cp_05, per_class_rows)
-
-    print("  Day 5 complete.")
-    print("  Next: Day 6 — counterfactual.py ('what needs to change?')")
-    print("  Then: Day 7 — ethics section + blind rating protocol\n")
+    print("  Conformal prediction complete.\n")
 
 
 if __name__ == "__main__":

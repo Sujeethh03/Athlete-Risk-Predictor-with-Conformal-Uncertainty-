@@ -1,7 +1,7 @@
 """
 app.py  (v2.1 — Full Backend Stack)
 ===================================
-FastAPI server exposing the complete Day 1-7 research pipeline.
+FastAPI server for the Enhanced Athlete Risk Predictor.
 
 SETUP (one-time)
 ----------------
@@ -47,7 +47,7 @@ INDEX_HTML     = os.path.join(TEMPLATES,  "index.html")
 
 # ── Startup verification ─────────────────────────────────────────────────────
 print("\n" + "=" * 55)
-print("  ARPX — FastAPI startup (v2.1)")
+print("  Enhanced Athlete Risk Predictor — FastAPI startup (v2.1)")
 print("=" * 55)
 
 for label, path in [
@@ -143,7 +143,7 @@ CLINICAL_ACTIONS = {
 # FastAPI app
 # ═════════════════════════════════════════════════════════════════════════════
 
-app = FastAPI(title="ARPX Enhanced Athlete Risk Predictor", version="2.1.0")
+app = FastAPI(title="Enhanced Athlete Risk Predictor", version="2.1.0")
 
 app.add_middleware(
     CORSMiddleware,

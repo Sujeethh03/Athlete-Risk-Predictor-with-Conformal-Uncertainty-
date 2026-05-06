@@ -12,10 +12,10 @@ WHAT THIS DOES
 5. Evaluates with 5-fold stratified cross-validation
 6. Reports per-class precision / recall / F1 (the real metrics)
 7. Saves:
-   - outputs/results_table.csv         (paper Table 3)
-   - outputs/confusion_matrix.png      (paper Figure 3)
-   - outputs/roc_curves.png            (paper Figure 4)
-   - outputs/feature_importance.png    (paper Figure 5)
+   - outputs/results_table.csv
+   - outputs/confusion_matrix.png
+   - outputs/roc_curves.png
+   - outputs/feature_importance.png
    - models/  (all trained .pkl files)
 
 WHY THESE CHOICES
@@ -231,7 +231,7 @@ def run_cross_validation(models, X_train_smote, y_train_smote, le):
     WHY: A single train/test split can be lucky or unlucky.
     5-fold CV trains 5 times, tests on each fold once.
     Every sample is tested exactly once.
-    We report mean ± std — the honest metric for a paper.
+    We report mean ± std across folds.
 
     NOTE: CV is run on the SMOTE-augmented training data.
     This is acceptable for synthetic benchmark evaluation.
@@ -290,7 +290,6 @@ def evaluate_on_test(models, X_train_smote, y_train_smote,
                      X_test, y_test, le):
     """
     Train each model on full training data, evaluate on held-out test set.
-    This is the number that goes in your paper results table.
     """
     test_results = {}
     trained_models = {}
@@ -336,19 +335,12 @@ def evaluate_on_test(models, X_train_smote, y_train_smote,
 
 # ═════════════════════════════════════════════════════════════════════════════
 # SECTION 5 — ABLATION: MLP WITHOUT SCALER
-# This documents the bug from v1 as a research finding
 # ═════════════════════════════════════════════════════════════════════════════
 
 def run_mlp_ablation(X_train_smote, y_train_smote, X_test, y_test):
     """
     Train MLP WITHOUT StandardScaler — reproduces the original 56% result.
-    This goes in the paper as an ablation study proving why scaling matters.
-
-    Paper framing:
-    'We observe that MLP performance degrades significantly without feature
-    normalization (accuracy 56.1% vs 79.6%), quantifying the sensitivity
-    of gradient-based optimization to feature scale variance — consistent
-    with known behaviour of backpropagation on unnormalized tabular data.'
+    Demonstrates sensitivity of gradient-based optimization to feature scale.
     """
     print("\n  Ablation: MLP without StandardScaler (reproduces v1 bug)...")
     mlp_raw = MLPClassifier(
@@ -368,11 +360,11 @@ def run_mlp_ablation(X_train_smote, y_train_smote, X_test, y_test):
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# SECTION 6 — SAVE RESULTS TABLE (paper Table 3)
+# SECTION 6 — SAVE RESULTS TABLE
 # ═════════════════════════════════════════════════════════════════════════════
 
 def save_results_table(cv_results, test_results, mlp_ablation, le):
-    """Save the paper-ready results table."""
+    """Save the results table."""
 
     rows = []
     for name in cv_results:
@@ -570,41 +562,6 @@ def save_models(trained_models, le):
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# SECTION 9 — PRINT PAPER-READY PARAGRAPH
-# ═════════════════════════════════════════════════════════════════════════════
-
-def print_paper_paragraph(cv_results, test_results):
-    """Print the exact paragraph for paper Section 4 (Results)."""
-    cb_cv  = cv_results["CatBoost"]
-    cb_tst = test_results["CatBoost"]
-    xg_cv  = cv_results["XGBoost"]
-    lg_cv  = cv_results["LightGBM"]
-    ml_cv  = cv_results["MLP"]
-
-    print("\n" + "=" * 65)
-    print("  PAPER-READY PARAGRAPH — paste into Section 4 (Results)")
-    print("=" * 65)
-    print(f"""
-Table 3 presents classification performance across all four models
-evaluated via 5-fold stratified cross-validation on the SMOTE-augmented
-training set. CatBoost achieved the highest cross-validated accuracy
-({cb_cv['acc_mean']*100:.2f}% +/- {cb_cv['acc_std']*100:.2f}%) and
-macro-averaged F1-score ({cb_cv['f1_mean']*100:.2f}% +/- {cb_cv['f1_std']*100:.2f}%),
-outperforming XGBoost ({xg_cv['acc_mean']*100:.2f}% +/- {xg_cv['acc_std']*100:.2f}%)
-and LightGBM ({lg_cv['acc_mean']*100:.2f}% +/- {lg_cv['acc_std']*100:.2f}%).
-On the held-out test set (N=450), CatBoost achieved
-{cb_tst['accuracy']*100:.2f}% accuracy and {cb_tst['auc_roc']:.4f} macro-averaged
-AUC-ROC. We observe that MLP performance improved substantially from
-56.1% (without feature normalization) to {ml_cv['acc_mean']*100:.2f}%
-(with StandardScaler), quantifying the sensitivity of gradient-based
-optimization to feature scale variance — consistent with known
-behaviour of backpropagation on unnormalized tabular data.
-Per-class precision, recall, and F1-scores are reported in Table 4.
-    """.strip())
-    print("=" * 65 + "\n")
-
-
-# ═════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═════════════════════════════════════════════════════════════════════════════
 
@@ -620,7 +577,7 @@ def main():
     args = parse_args()
     use_smote = not args.no_smote
 
-    print("\n  Day 3 — Training Pipeline")
+    print("\n  Training Pipeline")
     print("  " + "=" * 55)
 
     # ── Load data ─────────────────────────────────────────────────────────────
@@ -665,11 +622,7 @@ def main():
     plot_feature_importance(trained_models, X_train.columns.tolist())
     save_models(trained_models, le)
 
-    print_paper_paragraph(cv_results, test_results)
-
-    print("  Day 3 complete.")
-    print("  Next: Day 4 — evaluate.py with per-class metrics + ECE calibration")
-    print("  Then: Day 5 — conformal.py for uncertainty guarantees\n")
+    print("  Training complete.\n")
 
 
 if __name__ == "__main__":
